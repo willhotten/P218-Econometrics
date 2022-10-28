@@ -58,7 +58,7 @@ beta = 0.5
 
 # Set seed, sample size (n) and no. iterations (M)
 set.seed(1)
-n = 100
+n = 100000
 M = 1000
 
 # Setup stores of parameter estimates
@@ -91,7 +91,7 @@ for (i in 1:M){
 estimates <- data.frame(intercept, slope, sigmasq_hat)
 
 # Produce table of summary statistics to input into LaTeX
-stargazer(estimates, title = paste("Monte Carlo simulation results, n = ", n, ", M = ", M, sep=""), align =TRUE, out=paste("Homework 2/MC_results_n", n, "_M", M,".tex", sep = ""))
+stargazer(estimates, title = paste("Monte Carlo simulation results, n = ", n, ", M = ", M, sep=""), align =TRUE, out=paste("Homework 2/Results/MC_results_n", n, "_M", M,".tex", sep = ""))
 
 # Produce and save histograms of regression coefficients
 
@@ -99,25 +99,24 @@ stargazer(estimates, title = paste("Monte Carlo simulation results, n = ", n, ",
 hist1 <- ggplot(estimates, aes(x=intercept)) + 
   geom_histogram(aes(y=..density..), colour="black", fill="white")+
   geom_density(alpha=.2, fill="#FF6666")
-ggsave(paste("Homework 2/hist_intercept_n",n,"_M",M,".png", sep=""))
+ggsave(paste("Homework 2/Plots/hist_intercept_n",n,"_M",M,".png", sep=""))
 
 # Slope histogram
 hist2 <- ggplot(estimates, aes(x=slope)) + 
   geom_histogram(aes(y=..density..), colour="black", fill="white")+
   geom_density(alpha=.2, fill="#FF6666")
-ggsave(paste("Homework 2/hist_slope_n",n,"_M",M,".png", sep=""))
+ggsave(paste("Homework 2/Plots/hist_slope_n",n,"_M",M,".png", sep=""))
 
 # Compare empirial cdf of slope estimate to normal cdf
 
 # Asymptotic variance for normal cdf
 avar = (1/3)/(6*n)
 
-# Plotting empirical cdf and normal cdf with mean = 1 and sd = asymptotic variance defined above 
+# Plotting empirical cdf and theoretical normal cdf with mean = beta and sd = asymptotic variance defined above 
 ecdf <- ggplot(estimates, aes(x=slope)) +
-  stat_ecdf(geom = "step") +
-  stat_function(fun=pnorm,color="blue", args = list(mean = beta, sd = sqrt(avar))) +
-  labs(title="ECDF and theoretical CDF")
-ggsave(paste("Homework 2/ecdf_slope_n",n,"_M",M,".png", sep=""))
+  stat_ecdf(geom = "step", aes(colour = "Empirical CDF")) +
+  stat_function(fun=pnorm, aes(colour = "Theoretical CDF"), args = list(mean = beta, sd = sqrt(avar)))
+ggsave(paste("Homework 2/Plots/ecdf_slope_n",n,"_M",M,".png", sep=""))
 
 
 
