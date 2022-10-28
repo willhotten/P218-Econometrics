@@ -7,10 +7,8 @@
 #################################### Setup #####################################
 ################################################################################
 
-# Clean environment change working directory
+# Clean environment
 rm(list=ls())
-#setwd("C:\\Users\\gsimoesgaspar\\OneDrive - London Business School\\Teaching")
-setwd("~/Library/CloudStorage/OneDrive-LondonBusinessSchool/Documents/PhD/Courses/Year 1/P218 Econometrics I/P218-Econometrics/Homework 2")
 
 # Define a vector of packages that the script will use
 pkgs_required <- c("AER", "estimatr", "tidyverse", "vtable", "fastDummies", "stargazer")
@@ -31,7 +29,7 @@ invisible(lapply(pkgs_required, library, character.only=TRUE))
 ################################################################################
 
 # Importing dataset
-df <- read.delim("ps1.dat", sep="")
+df <- read.delim("Homework 2/ps1.dat", sep="")
 
 # Generating new variables for log wage, education and experience
 df$logw0 <- log(df$w0)
