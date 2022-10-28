@@ -1,0 +1,25 @@
+\begin{table}[htbp]\centering
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\caption{log(wage) regressed on constant, education, experience and experience squared}
+\begin{tabular}{l*{1}{c}}
+\hline\hline
+                    &\multicolumn{1}{c}{Log earnings}\\
+\hline
+Education (years)   &       0.144\sym{***}\\
+                    &    (0.0131)         \\
+[1em]
+Experience (years)  &      0.0265         \\
+                    &    (0.0284)         \\
+[1em]
+Experience squared  &    0.000969         \\
+                    &   (0.00134)         \\
+[1em]
+Constant            &       7.385\sym{***}\\
+                    &     (0.280)         \\
+\hline
+Observations        &        1500         \\
+\hline\hline
+\multicolumn{2}{l}{\footnotesize Standard errors in parentheses}\\
+\multicolumn{2}{l}{\footnotesize \sym{*} \(p<0.05\), \sym{**} \(p<0.01\), \sym{***} \(p<0.001\)}\\
+\end{tabular}
+\end{table}
