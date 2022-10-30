@@ -171,9 +171,5 @@ ecdf <- ggplot(estimates, aes(x=slope)) +
   stat_ecdf(geom = "step", aes(colour = "Empirical CDF")) +
   stat_function(fun=pnorm, aes(colour = "Theoretical CDF"), args = list(mean = beta, sd = sqrt(avar)))
 ggsave(paste("Homework 2/Plots/ecdf_slope_n",n,"_M",M,".png", sep=""))
-<<<<<<< HEAD
-
-=======
->>>>>>> f1efe9d (P218 PS2 Code 30/10)
 
 
