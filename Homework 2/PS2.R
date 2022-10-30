@@ -1,6 +1,6 @@
-#' This script helps to answer questions 2 and 3 of P218 - Econometrics HW2.
+#' This script helps to answer questions 1 - 3 of P218 - Econometrics HW2.
 #' 
-#' Last update: 27/10/2022
+#' Last update: 28/10/2022
 #' By: @willhotten
 
 ################################################################################
@@ -11,7 +11,7 @@
 rm(list=ls())
 
 # Define a vector of packages that the script will use
-pkgs_required <- c("AER", "estimatr", "tidyverse", "vtable", "fastDummies", "stargazer", "ggplot2")
+pkgs_required <- c("AER", "estimatr", "tidyverse", "vtable", "fastDummies", "stargazer", "ggplot2", "readxl")
 pkgs_install  <- pkgs_required[!(pkgs_required %in% installed.packages()[,"Package"])]
 
 # If any package is not already install then install it in machine
@@ -24,11 +24,45 @@ invisible(lapply(pkgs_required, library, character.only=TRUE))
 # Import necessary packages
 invisible(lapply(pkgs_required, library, character.only=TRUE))
 
+
+################################################################################
+##################################### Q1 #######################################
+################################################################################
+
+# Import dataset
+SP500Index <- read_excel("Homework 2/SP500Index.xlsx")
+
+# Create new variable for x_t
+SP500Index$Level0 = SP500Index$`Level of the S&P 500 Index`[1]
+SP500Index$x = log((SP500Index$`Level of the S&P 500 Index`)/(SP500Index$Level0))
+
+# Numerically calculating ML estimates
+# Last observation of x
+x_T <- last(SP500Index$x)
+# No. of observations, T
+T <- nrow(SP500Index)
+# Calculating delta hat using formula
+delta_hat <- x_T/T
+
+
+# Difference of x(t) - x(t-1)
+SP500Index <- SP500Index %>% mutate(xlag = lag(x))
+SP500Index$diff <- SP500Index$x - SP500Index$xlag
+# Calculate inside of brackets (x_t - x_t-1 - delta_hat)
+SP500Index$difftrans <- (SP500Index$diff - delta_hat)^2
+# Set NA values to zero
+SP500Index[is.na(SP500Index)] <- 0
+
+# Calculating sigma squared estimate using formula
+sigmasq_hat <- sum(SP500Index$difftrans)/T
+sqrtsigmasq_hat <- sqrt(sigmasq_hat)
+
+
 ################################################################################
 ##################################### Q2 #######################################
 ################################################################################
 
-# Import dataset
+
 df <- read.delim("Homework 2/ps1.dat", sep="")
 
 # Generate new variables for log wage, education and experience
@@ -46,7 +80,27 @@ df_dummy2 <- subset(df_dummy, select = -c(w0, ed0, a0, educ, exper))
 reg_dummy2 <- lm(logw0 ~ ., data=df_dummy2)
 
 # Produce table of results for LaTeX
-stargazer(reg_dummy2, title="Results", align=TRUE)
+stargazer(reg_dummy2, single.row = TRUE,
+          title = "Results", 
+          align =TRUE, out="Homework 2/Results/dummyreg_results.tex")
+
+# Restricted model regression
+reg_res <- lm(logw0 ~ educ + exper, data=df)
+
+# Residual sum of squares
+RSS_u <- sum(resid(reg_dummy2)^2)
+RSS_r <- sum(resid(reg_res)^2)
+
+# Set parameter values for F-stat calc
+p <- 35
+n <-1500
+k <- 39
+
+# Calculate F-stat
+F <- ((RSS_r - RSS_u)/p)/((RSS_u)/(n-k))
+
+# Critical value
+F_crit <- qf(0.95, p, (n-k))
 
 ################################################################################
 ##################################### Q3 #######################################
@@ -117,6 +171,9 @@ ecdf <- ggplot(estimates, aes(x=slope)) +
   stat_ecdf(geom = "step", aes(colour = "Empirical CDF")) +
   stat_function(fun=pnorm, aes(colour = "Theoretical CDF"), args = list(mean = beta, sd = sqrt(avar)))
 ggsave(paste("Homework 2/Plots/ecdf_slope_n",n,"_M",M,".png", sep=""))
+<<<<<<< HEAD
 
+=======
+>>>>>>> f1efe9d (P218 PS2 Code 30/10)
 
 
