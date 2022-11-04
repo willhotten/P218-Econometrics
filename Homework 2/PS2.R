@@ -92,9 +92,12 @@ RSS_u <- sum(resid(reg_dummy2)^2)
 RSS_r <- sum(resid(reg_res)^2)
 
 # Set parameter values for F-stat calc
+# p = no. restrictions (no. estimated coeff. - no.(NA) - no.(redundant))
 p <- 35
-n <-1500
-k <- 39
+# n = no. observations
+n <- count(df)
+# k = no. estimated parameters
+k <- length(reg_dummy2$coefficients[!is.na(reg_dummy2$coefficients)])
 
 # Calculate F-stat
 F <- ((RSS_r - RSS_u)/p)/((RSS_u)/(n-k))
